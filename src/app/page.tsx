@@ -2,20 +2,20 @@
 'use client'
 
 import './page.css'
-import { useState, useEffect, useRef, use } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import Peer from 'simple-peer';
 
 export default function Home() {
     const [messages, setMessages] = useState<{message: string, from: string}[]>([])
     const [currentMessage, setCurrentMessage] = useState('')
-    const [recorder, setRecorder] = useState<{ recorder: any, stream: any } | undefined>(undefined)
 
     const [socket, setSocket] = useState<Socket | undefined>(undefined)
     const [stream, setStream] = useState<any | undefined>(undefined)
     const [shareScreen, setShareScreen] = useState<any | undefined>(undefined)
     const [broadcast, setBroadcast] = useState<{id: string, signal: any, new: boolean} | undefined>(undefined)
     const [newUser, setNewUser] = useState<string | undefined>(undefined)
+    const [webcam, setWebcam] = useState(true)
     const [broadcastID, setBroadcastID] = useState('')
 
     const video = useRef<HTMLVideoElement>(null)
@@ -25,6 +25,8 @@ export default function Home() {
     async function socketInitializer() {
         const socketIO = io({ path: '/api/ws' })
         socketIO.on('message', ({message, from}) => {
+            const utterance = new SpeechSynthesisUtterance(message);
+            speechSynthesis.speak(utterance)
             setMessages((prevMessages) => [...prevMessages, {message, from}])
         })
         socketIO.on('videostream', ({signal, from}) => {
@@ -61,7 +63,25 @@ export default function Home() {
     }
 
     function startBroadcast() {
+        setCurrentMessage('')
+        setMessages([])
+        setShareScreen(undefined)
+        setWebcam(true)
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(async function(streamData) {
+            const context = new AudioContext();
+            const source = context.createMediaStreamSource(streamData);
+            const analyzer = context.createAnalyser();
+            source.connect(analyzer);
+            const array = new Uint8Array(analyzer.fftSize);
+            function getPeakLevel() {
+                analyzer.getByteTimeDomainData(array);
+                return array.reduce((max, current) => Math.max(max, Math.abs(current - 127)), 0) / 128;
+            }
+            function tick() {
+                getPeakLevel()
+                requestAnimationFrame(tick)
+            }
+            tick()
             const peer = new Peer({ initiator: true, trickle: false, stream: streamData })
             peer.on('signal', (data: any) => {
                 socket?.emit('videostream', { signal: data, from: socket?.id, to: socket?.id })
@@ -114,40 +134,6 @@ export default function Home() {
         }
     }
 
-    function blobToBase64(blob: Blob) {
-        return new Promise((resolve, _) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve((reader.result as string).split('base64,')[1]);
-            reader.readAsDataURL(blob);
-        })
-    }
-
-    async function startRecording() {
-        if (recorder != null) {
-            setTimeout(() => {
-                recorder.recorder.stop()
-                recorder.stream.getTracks().forEach(function(track: any) {
-                    track.stop();
-                })
-                setRecorder(undefined)
-            }, 2000)
-        } else {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(async function(stream) {
-                const mediaRecorder = new MediaRecorder(stream, {
-                    audioBitsPerSecond: 16000,
-                    mimeType: "audio/webm"
-                })
-                mediaRecorder.start()
-                mediaRecorder.ondataavailable = (e) => {
-                    blobToBase64(e.data).then((data) => {
-                        socket?.emit('voice', {data, from: socket?.id, to: broadcast!.id})
-                    })
-                }
-                setRecorder({ recorder: mediaRecorder, stream })
-            })
-        }
-    }
-
     useEffect(() => {
         socketInitializer()
     }, [])
@@ -191,46 +177,85 @@ export default function Home() {
 
     return (
         <main>
-            {broadcast && (
-                <>  
-                    <div className='flex flex-row w-[80%] ms-auto'>
+            {broadcast ? (
+                <div className='flex flex-row p-2'>
+                    <div className='flex flex-col w-[80%] relative'>
+                        <video playsInline ref={display} autoPlay className='w-full aspect-video rounded-xl border border-gray-300 dark:border-neutral-800 z-20'/>
+                        <div className='cg-block aspect-video absolute top-0 right-0 w-full rounded-xl z-10'></div>
+                        <video playsInline src='/placeholder.mp4' autoPlay muted loop className='absolute top-0 right-0 opacity-50 w-full h-full rounded-xl border border-gray-300 dark:border-neutral-800 z-0'/>
+                        <div className={`cg-block absolute bottom-0 left-0 w-[200px] h-auto backdrop-blur-2xl rounded-tr-xl rounded-bl-xl z-30 ${!webcam ? 'opacity-0' : ''}`}>
+                            <video playsInline ref={video} autoPlay className='w-[200px] h-auto camera rounded-tl-xl rounded-br-xl'/>
+                        </div>
                         {(socket?.id === broadcast?.id) ? (
-                            <button className='cg-button' onClick={stopBroadcast}>Stop video broadcast</button>
+                            <div className='absolute top-0 right-0 cg-block w-full border border-b-0 rounded-t-xl z-40'>
+                                <div className='flex flex-row w-full'>
+                                    <div className='flex flex-row me-auto'>
+                                        <div className='cg-icon flex-row'>
+                                            <span className="material-symbols-outlined me-2">fingerprint</span>
+                                            <p>{broadcast?.id}</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-row'>
+                                        <button className={`cg-icon ${webcam ? 'record' : ''}`} onClick={() => {setWebcam(!webcam)}}>
+                                            <span className="material-symbols-outlined">camera_video</span>
+                                        </button>
+                                        <button className={`cg-icon ${shareScreen != null ? 'record' : ''}`} onClick={startShareScreen}>
+                                            <span className="material-symbols-outlined">screen_record</span>
+                                        </button>
+                                        <button className='cg-icon' onClick={stopBroadcast}>
+                                            <span className="material-symbols-outlined">stop_circle</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         ) : (
-                            <button className='cg-button' onClick={() => {
-                                video!.current!.srcObject = null; setBroadcast(undefined); socket?.disconnect(); socketInitializer();
-                            }}>Leave broadcast</button>
-                        )}
-                        <p className="cg-message">Broadcast ID:</p>
-                        <input
-                            className='cg-input'
-                            type="text"
-                            value={broadcast.id}
-                            placeholder="Broadcast ID"
-                            disabled={true}
-                        />
-                        {(socket?.id === broadcast?.id) && (
-                            <button className={`cg-button ${shareScreen != null ? 'record' : ''}`} onClick={startShareScreen}>Screen share</button>
+                            <div className='absolute top-0 right-0 flex flex-row cg-block w-full border border-b-0'>
+                                <div className='flex flex-row ms-auto'>
+                                    <button className='cg-icon' onClick={() => {
+                                        video!.current!.srcObject = null; setBroadcast(undefined); socket?.disconnect(); socketInitializer();
+                                    }}>
+                                        <span className="material-symbols-outlined">logout</span>
+                                    </button>
+                                </div>
+                            </div>
                         )}
                     </div>
-                    <video playsInline ref={display} autoPlay className='ms-auto w-[80%] h-auto' />
-                    <div className='absolute top-0 left-0 w-[20%] flex flex-col'>
-                        <video playsInline ref={video} autoPlay className='w-full h-auto'/>
-                        <div className="flex flex-col w-full overflow-y-scroll">
-                            {messages.slice(-4).map((message, index) => (
-                                <div key={index} className="flex flex-row w-full">
-                                    <p className="cg-message break-words break-all">{`${message.from}: ${message.message}`}</p>
+                    <div className='flex flex-col w-[20%] h-screen absolute top-0 right-0 p-2 pl-1'>
+                        <div className='cg-block flex flex-col h-full border rounded-xl'>
+                            <div className='flex flex-col mt-auto overflow-y-scroll'>
+                                {messages.slice(-4).map((message, index) => (
+                                    <div key={index} className="flex flex-row w-full">
+                                        <p className="cg-message break-words break-all">{`${message.from}: ${message.message}`}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="cg-block flex flex-row w-full border-t rounded-b-xl">
+                                <div className="flex flex-row w-full">
+                                    <input
+                                        className='cg-input broadcast'
+                                        type="text"
+                                        value={currentMessage}
+                                        placeholder="Write a message"
+                                        onChange={(e) => setCurrentMessage(e.target.value)}
+                                    />
                                 </div>
-                            ))}
+                                <div className="flex flex-row">
+                                    <button className='cg-icon' onClick={sendMessage}>
+                                        <span className="material-symbols-outlined">send</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </>
-            )}
-            <div className='absolute bottom-0 left-0 w-full z-10'>
-                <div className='flex flex-row w-full'>
-                    {!broadcast && (
-                        <>
-                            <button id="start_broadcast" className='cg-button' onClick={startBroadcast}>Start video broadcast</button>
+                </div>
+            ) : (
+                <div className='flex flex-col h-screen w-screen items-center justify-center text-center'>
+                    <video playsInline src='/placeholder.mp4' autoPlay muted loop className='absolute top-0 right-0 w-full h-full z-0'/>
+                    <div className='absolute flex flex-col items-center justify-center bg-black backdrop-blur-2xl top-0 right-0 w-full h-full z-10 logo'>
+                        <h1 className='text-8xl font-extrabold my-8'>BRODLY</h1>
+                        <div className='flex flex-col w-[300px]'>
+                            <button id="start_broadcast" className='cg-button mx-auto' onClick={startBroadcast}>Start video broadcast</button>
+                            <p className='my-2'>OR</p>
                             <input
                                 className='cg-input'
                                 type="text"
@@ -241,23 +266,10 @@ export default function Home() {
                             <button className='cg-button' onClick={() => {
                                 if (broadcastID.length > 0) socket?.emit('new-user', { id: socket?.id, to: broadcastID })
                             }}>Connect to broadcast</button>
-                        </>
-                    )}
-                </div>
-                {broadcast && (
-                    <div className="flex flex-row w-full">
-                        <input
-                            className='cg-input'
-                            type="text"
-                            value={currentMessage}
-                            placeholder="Write a message"
-                            onChange={(e) => setCurrentMessage(e.target.value)}
-                        />
-                        <button className='cg-button' onClick={sendMessage}>Send message</button>
-                        <button className={`cg-button ${recorder != null ? 'record' : ''}`} onClick={startRecording}>{recorder != null ? 'Send recorded message' : 'Record voice message'}</button>
+                        </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </main>
     )
 }

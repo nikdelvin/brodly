@@ -9,16 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@google-cloud/speech": "^6.1.0",
-    "base64-stream": "^1.0.0",
-    "concat-stream": "^2.0.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
     "simple-peer": "^9.11.1",
     "socket.io": "^4.7.4",
-    "socket.io-client": "^4.7.4",
-    "socket.io-stream": "^0.5.3"
+    "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
     "@types/node": "^20",
