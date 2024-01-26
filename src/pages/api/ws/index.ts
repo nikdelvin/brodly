@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     io.on('connection', (socket) => {
         console.log(`Socket ${socket.id} connected.`)
-        socket.on('message', ({message, from, to}) => {
-            io.to(to).emit('message', {message, from})
+        socket.on('message', ({message, from, to, emoji}) => {
+            io.to(to).emit('message', {message, from, emoji})
         })
         socket.on('videostream', ({signal, from, to}) => {
             io.to(to).emit("videostream", {signal, from})
@@ -33,6 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         socket.on('new-user', ({id, to}) => {
             io.to(to).emit("new-user", {id})
+        })
+        socket.on('webcam-off', ({from, to}) => {
+            io.to(to).emit("webcam-off", {from})
+        })
+        socket.on('webcam-on', ({from, to}) => {
+            io.to(to).emit("webcam-on", {from})
+        })
+        socket.on('mic-off', ({from, to}) => {
+            io.to(to).emit("mic-off", {from})
+        })
+        socket.on('mic-on', ({from, to}) => {
+            io.to(to).emit("mic-on", {from})
+        })
+        socket.on('share-off', ({from, to}) => {
+            io.to(to).emit("share-off", {from})
         })
         socket.on('disconnect', () => {
             console.log(`Socket ${socket.id} disconnected.`)

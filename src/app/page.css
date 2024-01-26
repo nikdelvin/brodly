@@ -1,17 +1,15 @@
 .cg-input, .cg-button, .cg-message {
-    @apply flex w-full justify-start border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl border bg-gray-200 p-4 m-2 dark:bg-zinc-800/30;
+    @apply flex w-full justify-start border-neutral-800 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-gray-300 dark:from-inherit rounded-xl border-2 bg-gray-200 p-4 m-2 dark:bg-zinc-800/30;
 }
 
-.cg-message {
-  margin-top: 0 !important;
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background-color: transparent;
 }
-
-.cg-button {
-    justify-content: center !important;
-}
-
-.cg-input.broadcast {
-    padding: 0px 10px !important;
+  
+::-webkit-scrollbar-thumb {
+    background: white;
 }
 
 .cg-icon {
@@ -19,11 +17,11 @@
 }
 
 .cg-icon.record {
-    color: red !important;
+    @apply !text-red-600;
 }
 
 .cg-block {
-    @apply flex border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit bg-gray-200 dark:bg-zinc-800/30;
+    @apply flex border-neutral-800 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-gray-300 dark:from-inherit bg-gray-200 dark:bg-zinc-800/30;
 }
 
 .camera {
