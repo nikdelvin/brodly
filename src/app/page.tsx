@@ -275,12 +275,12 @@ export default function Home() {
         <main>
             {broadcast ? (
                 <div className='flex flex-row'>
-                    <video playsInline src='/placeholder2.mp4' autoPlay muted loop className='fixed bottom-0 right-0 min-w-max min-h-screen blur-2xl brightness-200 z-[-1]'/>
+                    <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 right-0 min-w-max min-h-screen blur-2xl brightness-200 z-[-1]'/>
                     <div className='w-[80%] h-screen bg-black p-2'>
                         <div className='flex flex-col relative'>
                             <video playsInline ref={display} autoPlay className='w-full aspect-video rounded-xl z-40'/>
                             <div className='cg-block aspect-video absolute top-0 right-0 w-full rounded-xl z-30'></div>
-                            <video playsInline src='/placeholder2.mp4' autoPlay muted loop className='absolute top-0 right-0 w-full h-full rounded-xl z-20'/>
+                            <video playsInline src='/placeholder.mp4' autoPlay muted loop className='absolute top-0 right-0 w-full h-full rounded-xl z-20'/>
                             <div id="webcam" className={`cg-block absolute bottom-0 left-0 w-[200px] h-auto backdrop-blur-2xl rounded-tr-xl rounded-bl-xl z-50 ${!webcam ? 'opacity-0' : ''}`}>
                                 <video playsInline ref={video} autoPlay className='w-[200px] h-auto camera rounded-tl-xl rounded-br-xl'/>
                                 <audio playsInline ref={audio} autoPlay className='!w-0 !h-0 !m-0 !p-0'/>
@@ -369,7 +369,7 @@ export default function Home() {
                 </div>
             ) : (
                 <div className='flex flex-col h-screen w-screen items-center justify-center text-center'>
-                    <video playsInline src='/placeholder2.mp4' autoPlay muted loop className='fixed bottom-0 right-0 blur-2xl min-w-max min-h-screen z-0'/>
+                    <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 right-0 blur-2xl min-w-max min-h-screen z-0'/>
                     <div className='absolute flex flex-col items-center justify-center bg-black top-0 right-0 w-full h-full z-10 logo'>
                         <h1 className='text-8xl font-extrabold my-8'>BRODLY</h1>
                         <div className='flex flex-col w-[300px]'>
