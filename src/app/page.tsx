@@ -5,6 +5,7 @@ import './page.css'
 import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import Peer from 'simple-peer';
+import Brodly from '../icons/brodly'
 
 export default function Home() {
     const [messages, setMessages] = useState<{message: string, from: string, emoji?: string}[]>([])
@@ -371,8 +372,12 @@ export default function Home() {
                 <div className='flex flex-col h-screen w-screen items-center justify-center text-center'>
                     <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 right-0 blur-2xl min-w-max min-h-screen z-0'/>
                     <div className='absolute flex flex-col items-center justify-center bg-black top-0 right-0 w-full h-full z-10 logo'>
-                        <h1 className='text-8xl font-extrabold my-8'>BRODLY</h1>
-                        <div className='flex flex-col w-[300px]'>
+                        <div className="flex flex-row my-8">
+                            <div className='h-[100px] w-[100px] mr-4'><Brodly/></div>
+                            <h1 className='text-8xl font-extrabold'>BRODLY</h1>
+                        </div>
+                        <h1 className='text-4xl font-medium w-[600px] my-8'>Stylish, modern, high-secure and fully anonymous live streaming platform for everyone</h1>
+                        <div className='flex flex-col w-[300px] mt-4'>
                             <button id="start_broadcast" className='cg-button !justify-center mx-auto' onClick={startBroadcast}>Start video broadcast</button>
                             <p className='my-2'>OR</p>
                             <input
