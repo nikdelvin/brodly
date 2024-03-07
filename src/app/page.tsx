@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import Peer from 'simple-peer';
 import Brodly from '../icons/brodly'
+import Github from '../icons/github'
+import Image from 'next/image';
 
 export default function Home() {
     const [messages, setMessages] = useState<{message: string, from: string, emoji?: string}[]>([])
@@ -369,27 +371,82 @@ export default function Home() {
                     </div>
                 </div>
             ) : (
-                <div className='flex flex-col h-screen w-screen items-center justify-center text-center'>
-                    <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 right-0 blur-2xl min-w-max min-h-screen z-0'/>
-                    <div className='absolute flex flex-col items-center justify-center bg-black top-0 right-0 w-full h-full z-10 logo'>
-                        <div className="flex flex-row my-8">
-                            <div className='h-[100px] w-[100px] mr-4'><Brodly/></div>
-                            <h1 className='text-8xl font-extrabold'>BRODLY</h1>
-                        </div>
-                        <h1 className='text-4xl font-medium w-[600px] my-8'>Stylish, modern, high-secure and fully anonymous live streaming platform for everyone</h1>
-                        <div className='flex flex-col w-[300px] mt-4'>
-                            <button id="start_broadcast" className='cg-button !justify-center mx-auto' onClick={startBroadcast}>Start video broadcast</button>
-                            <p className='my-2'>OR</p>
-                            <input
-                                className='cg-input'
-                                type="text"
-                                value={broadcastID}
-                                placeholder="Set Broadcast ID"
-                                onChange={(e) => setBroadcastID(e.target.value)}
-                            />
-                            <button className='cg-button !justify-center' onClick={() => {
-                                if (broadcastID.length > 0) socket?.emit('new-user', { id: socket?.id, to: broadcastID })
-                            }}>Connect to broadcast</button>
+                <div className="flex h-screen w-screen flex-col overflow-y-scroll">
+                    <div className="h-full bg-gradient-to-tr from-yellow-400/25 via-zinc-950 to-red-400/25 text-zinc-50">
+                        <div className="flex h-full w-full flex-col items-center justify-start gap-4 p-16">
+                            <div className="grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
+                                <div className="flex w-full flex-col">
+                                    <div className="mb-16 flex flex-row items-center gap-2">
+                                        <div className="h-[96px] w-[96px]"><Brodly/></div>
+                                        <h1 className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-8xl font-bold leading-tight text-transparent">
+                                            Brodly
+                                        </h1>
+                                    </div>
+                                    <h1 className="mb-10 text-5xl font-bold leading-tight">
+                                        Share{' '}
+                                        <span className="inline bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 bg-clip-text text-transparent">
+                                            beautiful{' '}
+                                        </span>{' '}
+                                        moments of your life to everyone with customizable real-time{' '}
+                                        <span className="inline bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 bg-clip-text text-transparent">
+                                            broadcasts
+                                        </span>
+                                    </h1>
+                                    <h3 className="mb-10 text-2xl text-zinc-500">
+                                        Stylish, modern, high-secure and fully anonymous live streaming platform.
+                                    </h3>
+                                    <div className="grid w-[400px] grid-flow-row grid-cols-2 gap-4">
+                                        <button
+                                            data-color="warning"
+                                            data-type="solid"
+                                            data-size="large"
+                                            className="button"
+                                            onClick={startBroadcast}
+                                        >
+                                            <span className="font-medium">Start broadcast</span>
+                                        </button>
+                                        <a
+                                            data-color="error"
+                                            data-type="bordered"
+                                            data-size="large"
+                                            className="button"
+                                            href="https://github.com/nikdelvin/brodly"
+                                        >
+                                            <Github />
+                                            <span className="font-medium">GitHub</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="grid grid-flow-row grid-cols-2 gap-4 mx-8 my-16">
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[-10deg] scale-100 py-4">
+                                        <Image
+                                            alt="Main 1"
+                                            src="/main-1.png"
+                                            width={640}
+                                            height={360}
+                                        />
+                                    </div>
+                                    <div className='flex flex-col items-center justify-center h-full'></div>
+                                    <div className='flex flex-col items-center justify-center h-full'></div>
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[10deg] blur-sm scale-90 py-4">
+                                        <Image
+                                            alt="Main 2"
+                                            src="/main-2.png"
+                                            width={640}
+                                            height={360}
+                                        />
+                                    </div>
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[-10deg] blur-md scale-[0.8] py-4">
+                                        <Image
+                                            alt="Main 3"
+                                            src="/main-3.png"
+                                            width={640}
+                                            height={360}
+                                        />
+                                    </div>
+                                    <div className='flex flex-col items-center justify-center h-full'></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

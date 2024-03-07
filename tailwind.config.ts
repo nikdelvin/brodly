@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { tailyUI } from 'taily-ui'
 
 const config: Config = {
   content: [
@@ -15,6 +16,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [tailyUI],
 }
 export default config
