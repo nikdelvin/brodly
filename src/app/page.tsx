@@ -372,13 +372,13 @@ export default function Home() {
                 </div>
             ) : (
                 <div className="flex h-screen w-screen flex-col overflow-y-scroll">
-                    <div className="h-full bg-gradient-to-tr from-yellow-400/25 via-zinc-950 to-red-400/25 text-zinc-50">
+                    <div className="h-full bg-gradient-to-tr from-yellow-500/25 via-zinc-950 to-red-500/25 text-zinc-50">
                         <div className="flex h-full w-full flex-col items-center justify-start gap-4 p-16">
                             <div className="grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
                                 <div className="flex w-full flex-col">
                                     <div className="mb-16 flex flex-row items-center gap-2">
                                         <div className="h-[96px] w-[96px]"><Brodly/></div>
-                                        <h1 className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-8xl font-bold leading-tight text-transparent">
+                                        <h1 className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-8xl font-bold leading-tight text-transparent">
                                             Brodly
                                         </h1>
                                     </div>
@@ -418,7 +418,7 @@ export default function Home() {
                                     </div>
                                 </div>
                                 <div className="grid grid-flow-row grid-cols-2 gap-4 mx-8 my-16">
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[-10deg] scale-100 py-4">
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[-10deg] scale-100 py-4">
                                         <Image
                                             alt="Main 1"
                                             src="/main-1.png"
@@ -428,7 +428,7 @@ export default function Home() {
                                     </div>
                                     <div className='flex flex-col items-center justify-center h-full'></div>
                                     <div className='flex flex-col items-center justify-center h-full'></div>
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[10deg] blur-sm scale-90 py-4">
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[10deg] blur-sm scale-90 py-4">
                                         <Image
                                             alt="Main 2"
                                             src="/main-2.png"
@@ -436,7 +436,7 @@ export default function Home() {
                                             height={360}
                                         />
                                     </div>
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rotate-[-10deg] blur-md scale-[0.8] py-4">
+                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[-10deg] blur-md scale-[0.8] py-4">
                                         <Image
                                             alt="Main 3"
                                             src="/main-3.png"
