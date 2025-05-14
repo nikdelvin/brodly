@@ -6,8 +6,6 @@ import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import Peer from 'simple-peer';
 import Brodly from '../icons/brodly'
-import Github from '../icons/github'
-import Image from 'next/image';
 
 export default function Home() {
     const [messages, setMessages] = useState<{message: string, from: string, emoji?: string}[]>([])
@@ -220,9 +218,9 @@ export default function Home() {
 
     useEffect(() => {
         if (broadcast != null) {
-            audio!.current!.muted = !mute
-            video!.current!.muted = !mute
-            display!.current!.muted = !mute
+            audio!.current!.muted = mute
+            video!.current!.muted = mute
+            display!.current!.muted = mute
         }
     }, [mute])
 
@@ -275,50 +273,57 @@ export default function Home() {
     }, [newUser])
 
     return (
-        <main>
+        <main id="app-root">
             {broadcast ? (
-                <div className='flex flex-row'>
+                <div className='max-sm:translate-3d-0 flex select-none flex-row overflow-hidden max-sm:h-screen max-sm:flex-col'>
                     <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 right-0 min-w-max min-h-screen blur-2xl brightness-200 z-[-1]'/>
-                    <div className='w-[80%] h-screen bg-black p-2'>
+                    <div className='w-[80%] h-screen bg-black p-2 max-sm:h-auto max-sm:w-full'>
                         <div className='flex flex-col relative'>
                             <video playsInline ref={display} autoPlay className='w-full aspect-video rounded-xl z-40'/>
                             <div className='cg-block aspect-video absolute top-0 right-0 w-full rounded-xl z-30'></div>
                             <video playsInline src='/placeholder.mp4' autoPlay muted loop className='absolute top-0 right-0 w-full h-full rounded-xl z-20'/>
-                            <div id="webcam" className={`cg-block absolute bottom-0 left-0 w-[200px] h-auto backdrop-blur-2xl rounded-tr-xl rounded-bl-xl z-50 ${!webcam ? 'opacity-0' : ''}`}>
-                                <video playsInline ref={video} autoPlay className='w-[200px] h-auto camera rounded-tl-xl rounded-br-xl'/>
+                            <div id="webcam" className={`cg-block absolute bottom-0 left-0 w-[200px] h-auto backdrop-blur-2xl rounded-tr-xl rounded-bl-xl z-50 max-sm:w-[100px] ${!webcam ? 'opacity-0' : ''}`}>
+                                <video playsInline ref={video} autoPlay className='w-[200px] h-auto camera rounded-tl-xl rounded-br-xl max-sm:w-[100px]'/>
                                 <audio playsInline ref={audio} autoPlay className='!w-0 !h-0 !m-0 !p-0'/>
                             </div>
                             {(socket?.id === broadcast?.id) ? (
                                 <div className='absolute top-0 right-0 cg-block w-full rounded-t-xl z-[60]'>
                                     <div className='flex flex-row w-full'>
                                         <div className='flex flex-row me-auto'>
-                                            <div className='cg-icon flex-row'>
-                                                <span className="material-symbols-outlined me-2">fingerprint</span>
-                                                <p>{broadcast?.id}</p>
+                                            <div className='cg-icon flex-row max-sm:!p-2'>
+                                                <span className="material-symbols-outlined me-2 max-sm:!text-[16px]">fingerprint</span>
+                                                <p className='max-sm:!text-[10px] max-sm:!leading-[16px]'>{broadcast?.id}</p>
                                             </div>
                                         </div>
                                         <div className='flex flex-row'>
-                                            <button className={`cg-icon ${webcam ? 'record' : ''}`} onClick={() => {
+                                            <button className={`cg-icon max-sm:!p-2 ${webcam ? 'record' : ''}`} onClick={() => {
                                                 Object.entries(connections.current).forEach((connection) => {
                                                     socket?.emit(!webcam ? 'webcam-on' : 'webcam-off', {from: socket?.id, to: connection[0]})
                                                 })
                                                 setWebcam(!webcam)
                                             }}>
-                                                <span className="material-symbols-outlined">camera_video</span>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">camera_video</span>
                                             </button>
-                                            <button className={`cg-icon ${mic ? 'record' : ''}`} onClick={() => {
+                                            <button className={`cg-icon max-sm:!p-2 ${mic ? 'record' : ''}`} onClick={() => {
                                                 Object.entries(connections.current).forEach((connection) => {
                                                     socket?.emit(!mic ? 'mic-on' : 'mic-off', {from: socket?.id, to: connection[0]})
                                                 })
                                                 setMic(!mic)
                                             }}>
-                                                <span className="material-symbols-outlined">mic</span>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">mic</span>
                                             </button>
-                                            <button className={`cg-icon ${shareScreen != null ? 'record' : ''}`} onClick={startShareScreen}>
-                                                <span className="material-symbols-outlined">screen_record</span>
+                                            <button className="cg-icon max-sm:!p-2" onClick={() => {
+                                                setMute(!mute)
+                                            }}>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">
+                                                    {mute ? 'volume_off' : 'volume_up'}
+                                                </span>
                                             </button>
-                                            <button className='cg-icon' onClick={stopBroadcast}>
-                                                <span className="material-symbols-outlined">stop_circle</span>
+                                            <button className={`cg-icon max-sm:!p-2 ${shareScreen != null ? 'record' : ''}`} onClick={startShareScreen}>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">screen_record</span>
+                                            </button>
+                                            <button className='cg-icon max-sm:!p-2' onClick={stopBroadcast}>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">stop_circle</span>
                                             </button>
                                         </div>
                                     </div>
@@ -327,13 +332,13 @@ export default function Home() {
                                 <div className='absolute top-0 right-0 cg-block w-full rounded-t-xl z-[60]'>
                                     <div className='flex flex-row w-full'>
                                         <div className='flex flex-row ms-auto'>
-                                            <button className='cg-icon' onClick={() => {setMute(!mute)}}>
-                                                <span className="material-symbols-outlined">{mute ? 'volume_off' : 'volume_up'}</span>
+                                            <button className='cg-icon max-sm:!p-2' onClick={() => {setMute(!mute)}}>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">{mute ? 'volume_off' : 'volume_up'}</span>
                                             </button>
-                                            <button className='cg-icon' onClick={() => {
+                                            <button className='cg-icon max-sm:!p-2' onClick={() => {
                                                 video!.current!.srcObject = null; setBroadcast(undefined); socket?.disconnect(); socketInitializer();
                                             }}>
-                                                <span className="material-symbols-outlined">logout</span>
+                                                <span className="material-symbols-outlined max-sm:!text-[16px]">logout</span>
                                             </button>
                                         </div>
                                     </div>
@@ -341,7 +346,7 @@ export default function Home() {
                             )}
                         </div>
                     </div>
-                    <div className='flex flex-col w-[20%] h-screen absolute top-0 right-0 p-2 pl-0 bg-black logo'>
+                    <div className='flex flex-col w-[20%] h-screen absolute top-0 right-0 p-2 pl-0 bg-black logo max-sm:relative max-sm:h-full max-sm:w-full max-sm:py-0 max-sm:pl-2'>
                         <div className='flex flex-col h-full pt-2 border-2 rounded-xl overflow-y-scroll'>
                             <div className='flex flex-col mt-auto'>
                                 {messages.map((message, index) => (
@@ -371,82 +376,29 @@ export default function Home() {
                     </div>
                 </div>
             ) : (
-                <div className="flex h-screen w-screen flex-col overflow-y-scroll">
-                    <div className="h-full bg-gradient-to-tr from-yellow-500/25 via-zinc-950 to-red-500/25 text-zinc-50">
-                        <div className="flex h-full w-full flex-col items-center justify-start gap-4 p-16">
-                            <div className="grid grid-flow-row grid-cols-1 gap-4 lg:grid-cols-2">
-                                <div className="flex w-full flex-col">
-                                    <div className="mb-16 flex flex-row items-center gap-2">
-                                        <div className="h-[96px] w-[96px]"><Brodly/></div>
-                                        <h1 className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-8xl font-bold leading-tight text-transparent">
-                                            Brodly
-                                        </h1>
-                                    </div>
-                                    <h1 className="mb-10 text-5xl font-bold leading-tight">
-                                        Share{' '}
-                                        <span className="inline bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 bg-clip-text text-transparent">
-                                            beautiful{' '}
-                                        </span>{' '}
-                                        moments of your life to everyone with customizable real-time{' '}
-                                        <span className="inline bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 bg-clip-text text-transparent">
-                                            broadcasts
-                                        </span>
-                                    </h1>
-                                    <h3 className="mb-10 text-2xl text-zinc-500">
-                                        Stylish, modern, high-secure and fully anonymous live streaming platform.
-                                    </h3>
-                                    <div className="grid w-[400px] grid-flow-row grid-cols-2 gap-4">
-                                        <button
-                                            data-color="warning"
-                                            data-type="solid"
-                                            data-size="large"
-                                            className="button"
-                                            onClick={startBroadcast}
-                                        >
-                                            <span className="font-medium">Start broadcast</span>
-                                        </button>
-                                        <a
-                                            data-color="error"
-                                            data-type="bordered"
-                                            data-size="large"
-                                            className="button"
-                                            href="https://github.com/nikdelvin/brodly"
-                                        >
-                                            <Github />
-                                            <span className="font-medium">GitHub</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div className="grid grid-flow-row grid-cols-2 gap-4 mx-8 my-16">
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[-10deg] scale-100 py-4">
-                                        <Image
-                                            alt="Main 1"
-                                            src="/main-1.png"
-                                            width={640}
-                                            height={360}
-                                        />
-                                    </div>
-                                    <div className='flex flex-col items-center justify-center h-full'></div>
-                                    <div className='flex flex-col items-center justify-center h-full'></div>
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[10deg] blur-sm scale-90 py-4">
-                                        <Image
-                                            alt="Main 2"
-                                            src="/main-2.png"
-                                            width={640}
-                                            height={360}
-                                        />
-                                    </div>
-                                    <div className="flex h-full w-full flex-col items-center justify-center rounded-3xl bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rotate-[-10deg] blur-md scale-[0.8] py-4">
-                                        <Image
-                                            alt="Main 3"
-                                            src="/main-3.png"
-                                            width={640}
-                                            height={360}
-                                        />
-                                    </div>
-                                    <div className='flex flex-col items-center justify-center h-full'></div>
-                                </div>
-                            </div>
+                <div className='max-sm:translate-3d-0 flex flex-col h-screen w-screen items-center justify-center text-center overflow-hidden'>
+                    <div className="overflow-hidden flex justify-center">
+                        <video playsInline src='/placeholder.mp4' autoPlay muted loop className='fixed bottom-0 blur-2xl min-w-max min-h-screen z-0'/>
+                    </div>
+                    <div className='absolute flex flex-col items-center justify-center bg-black top-0 right-0 w-full h-full z-10 logo'>
+                        <div className="flex flex-row my-8 items-center">
+                            <div className='h-[90px] w-[90px] mr-2 my-auto max-sm:h-[50px] max-sm:w-[50px]'><Brodly/></div>
+                            <h1 className='text-8xl font-extrabold max-sm:text-[33px]'>BRODLY</h1>
+                        </div>
+                        <h1 className='text-4xl font-medium w-[600px] max-w-[80%] my-8 max-sm:text-2xl'>Stylish, modern, high-secure and fully anonymous live streaming platform for everyone</h1>
+                        <div className='flex flex-col w-[300px] mt-4'>
+                            <button id="start_broadcast" className='cg-button !justify-center mx-auto' onClick={startBroadcast}>Start video broadcast</button>
+                            <p className='my-2'>OR</p>
+                            <input
+                                className='cg-input'
+                                type="text"
+                                value={broadcastID}
+                                placeholder="Set Broadcast ID"
+                                onChange={(e) => setBroadcastID(e.target.value)}
+                            />
+                            <button className='cg-button !justify-center' onClick={() => {
+                                if (broadcastID.length > 0) socket?.emit('new-user', { id: socket?.id, to: broadcastID })
+                            }}>Connect to broadcast</button>
                         </div>
                     </div>
                 </div>

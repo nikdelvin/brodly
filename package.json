@@ -3,33 +3,37 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.0.4",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "^15.3.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "simple-peer": "^9.11.1",
-    "socket.io": "^4.7.4",
-    "socket.io-client": "^4.7.4",
-    "taily-ui": "^1.0.6"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "taily-ui": "^1.2.29"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.4.17",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.4",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "@types/node": "^20.17.47",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "15.3.2",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3"
   },
   "browserslist": [
     "last 1 chrome version",
     "last 1 safari version"
-  ]
+  ],
+  "overrides": {
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5"
+  }
 }

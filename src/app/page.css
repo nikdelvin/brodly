@@ -41,4 +41,13 @@
 .logo {
     mix-blend-mode: darken;
 }
-  
+
+@media not all and (min-width: 640px) {
+    .max-sm\:translate-3d-0 {
+        transform:translateZ(0)
+    }
+}
+
+#app-root {
+    color: white;
+}
