@@ -183,10 +183,6 @@ export default function Home() {
     }
 
     useEffect(() => {
-        socketInitializer()
-    }, [])
-
-    useEffect(() => {
         if (broadcast != null) {
             if (!webcam) {
                 video!.current!.srcObject = null
@@ -387,7 +383,7 @@ export default function Home() {
                         </div>
                         <h1 className='text-4xl font-medium w-[600px] max-w-[80%] my-8 max-sm:text-2xl'>Stylish, modern, high-secure and fully anonymous live streaming platform for everyone</h1>
                         <div className='flex flex-col w-[300px] mt-4'>
-                            <button id="start_broadcast" className='cg-button !justify-center mx-auto' onClick={startBroadcast}>Start video broadcast</button>
+                            <button id="start_broadcast" className='cg-button !justify-center mx-auto' onClick={() => {socketInitializer(); startBroadcast();}}>Start video broadcast</button>
                             <p className='my-2'>OR</p>
                             <input
                                 className='cg-input'
@@ -397,6 +393,7 @@ export default function Home() {
                                 onChange={(e) => setBroadcastID(e.target.value)}
                             />
                             <button className='cg-button !justify-center' onClick={() => {
+                                socketInitializer();
                                 if (broadcastID.length > 0) socket?.emit('new-user', { id: socket?.id, to: broadcastID })
                             }}>Connect to broadcast</button>
                         </div>
